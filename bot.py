@@ -1,5 +1,6 @@
 import logging
 from datetime import date
+import random
 
 import ephem
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
@@ -83,14 +84,57 @@ def next_full_moon(bot, update):
 
 def cities(bot, update):
     dict_cities = {
-                'a': 'Абакан', 
-                'б': 'Барнаул'
+                'а': ['Абакан', 'Азов', 'Альметьевск', 'Ангарск', 'Арзамас', 'Армавир', 'Архангельск', 'Астрахань', 'Ачинск'], 
+                'б': ['Барнаул', 'Белгород', 'Бийск', 'Благовещенск', 'Братск', 'Брянск'],
+                'в': ['Великие Луки', 'Великий Новгород', 'Владивосток', 'Владикавказ', 'Владимир', 'Волгоград', 'Волгодонск', 'Волжский', 'Вологда', 'Воркута', 'Воронеж'],
+                'г': ['Грозный'],
+                'д': ['Дзержинск'],
+                'е': ['Екатеринбург', 'Елец', 'Есентуки'],
+                'и': ['Иваново', 'Ижевск', 'Иркутск'],
+                'й': ['Йошкар-Ола'],
+                'к': ['Казань', 'Калининград', 'Калуга', 'Камышин', 'Кемерово', 'Киров', 'Кисловодск', 'Ковров', 'Коломна', 'Комсомольск-на-Амуре', 'Кострома', 'Красногорск', 'Краснодар', 'Красноярск', 'Курган', 'Курск', 'Кызыл'],
+                'л': ['Липецк'],
+                'м': ['Магадан', 'Магнитогорск', 'Майкоп', 'Междуреченск', 'Миасс', 'Москва', 'Мурманск', 'Муром', 'Мытищи'],
+                'н': ['Набережные Челны', 'Назрань', 'Нальчик', 'Находка', 'Нефтекамск', 'Нефтеюганск', 'Нижневартовск', 'Нижнекамск', 'Нижний Новгород', 'Нижний Тагил', 'Новокузнецк', 'Новокуйбышевск', 'Новороссийск', 'Новосибирск', 'Новоуральск', 'Новочеркасск', 'Новый Уренгой', 'Норильск', 'Ноябрьск'],
+                'о': ['Обнинск', 'Одинцово', 'Омск', 'Орел', 'Оренбург', 'Орехово-Зуево'],
+                'п': ['Пенза', 'Пермь', 'Петрозаводск', 'Петропавловск-Камчатский', 'Псков', 'Пятигорск'],
+                'р': ['Ростов-на-Дону', 'Рыбинск', 'Рязань'],
+                'с': ['Самара', 'Санкт-Петербург', 'Саранск', 'Саратов', 'Сергиев Посад', 'Серпухов', 'Смоленск', 'Соликамск', 'Сочи', 'Ставрополь', 'Старый Оскол', 'Стерлитамак', 'Сызрань', 'Сыктывкар'],
+                'т': ['Таганрог', 'Тамбов', 'Тверь', 'Тобольск', 'Тольятти', 'Томск', 'Туапсе', 'Тюмень'],
+                'у': ['Улан-Удэ', 'Ульяновск', 'Уссурийск', 'Уфа', 'Ухта'],
+                'х': ['Хабаровск', 'Химки'],
+                'ч': ['Чебоксары', 'Челябинск', 'Череповец', 'Чита'],
+                'э': ['Элиста', 'Энгельс'],
+                'ю': ['Южно-Сахалинск'],
+                'я': ['Якутск', 'Ярославль']
                 }
-    user_id = update.message.chat.id
-    user_name = update.message.chat.username
-    user_text = update.message.text.split()
-    user_text.pop(0)
-
+                
+    # user_id = update.message.chat.id
+    # user_name = update.message.chat.username
+    user_text = str(update.message.text)
+    user_text = user_text.replace('/cities ', '').lower()
+    print(user_text)
+    if user_text is not "":
+        position_last_letter = len(user_text) - 1
+        last_letter = user_text[position_last_letter]
+        if last_letter in dict_cities.keys():
+            reply_city = random.choice(dict_cities[last_letter])
+            update.message.reply_text(f"{reply_city}")
+            print(reply_city)
+        else:
+            update.message.reply_text(f"I don't know any city, that starts with '{last_letter}'")
+            print(f"I don't know any city, that starts with '{last_letter}'")
+            position_last_letter -= 1
+            while position_last_letter > -1:
+                last_letter = user_text[position_last_letter]
+                if last_letter in dict_cities.keys():
+                    reply_city = random.choice(dict_cities[last_letter])
+                    update.message.reply_text(f"{reply_city}")
+                    print(reply_city)
+                    break
+    else:
+        update.message.reply_text("Enter a city after '/cities' command")
+        print("Enter a city after '/cities' command")
 
 def talk_to_me(bot, update):
 
